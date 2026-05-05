@@ -1,0 +1,237 @@
+"use client";
+
+import { create } from "zustand";
+import {
+  CVData,
+  TemplateType,
+  PersonalInfo,
+  Education,
+  Experience,
+  Skill,
+  Project,
+  Certification,
+  defaultCVData,
+} from "@/types/cv";
+
+interface CVStore {
+  cvId: string | null;
+  title: string;
+  template: TemplateType;
+  data: CVData;
+  activeStep: number;
+  isDirty: boolean;
+  isSaving: boolean;
+
+  setCvId: (id: string | null) => void;
+  setTitle: (title: string) => void;
+  setTemplate: (template: TemplateType) => void;
+  setActiveStep: (step: number) => void;
+  setIsSaving: (saving: boolean) => void;
+  markClean: () => void;
+
+  updatePersonalInfo: (info: Partial<PersonalInfo>) => void;
+
+  addEducation: (education: Education) => void;
+  updateEducation: (id: string, education: Partial<Education>) => void;
+  removeEducation: (id: string) => void;
+
+  addExperience: (experience: Experience) => void;
+  updateExperience: (id: string, experience: Partial<Experience>) => void;
+  removeExperience: (id: string) => void;
+
+  addSkill: (skill: Skill) => void;
+  updateSkill: (id: string, skill: Partial<Skill>) => void;
+  removeSkill: (id: string) => void;
+
+  addProject: (project: Project) => void;
+  updateProject: (id: string, project: Partial<Project>) => void;
+  removeProject: (id: string) => void;
+
+  addCertification: (certification: Certification) => void;
+  updateCertification: (
+    id: string,
+    certification: Partial<Certification>
+  ) => void;
+  removeCertification: (id: string) => void;
+
+  loadCVData: (data: CVData) => void;
+  resetStore: () => void;
+}
+
+export const useCVStore = create<CVStore>((set) => ({
+  cvId: null,
+  title: "Untitled CV",
+  template: "modern",
+  data: { ...defaultCVData },
+  activeStep: 0,
+  isDirty: false,
+  isSaving: false,
+
+  setCvId: (id) => set({ cvId: id }),
+  setTitle: (title) => set({ title, isDirty: true }),
+  setTemplate: (template) => set({ template, isDirty: true }),
+  setActiveStep: (step) => set({ activeStep: step }),
+  setIsSaving: (saving) => set({ isSaving: saving }),
+  markClean: () => set({ isDirty: false }),
+
+  updatePersonalInfo: (info) =>
+    set((state) => ({
+      data: {
+        ...state.data,
+        personalInfo: { ...state.data.personalInfo, ...info },
+      },
+      isDirty: true,
+    })),
+
+  addEducation: (education) =>
+    set((state) => ({
+      data: {
+        ...state.data,
+        education: [...state.data.education, education],
+      },
+      isDirty: true,
+    })),
+  updateEducation: (id, education) =>
+    set((state) => ({
+      data: {
+        ...state.data,
+        education: state.data.education.map((e) =>
+          e.id === id ? { ...e, ...education } : e
+        ),
+      },
+      isDirty: true,
+    })),
+  removeEducation: (id) =>
+    set((state) => ({
+      data: {
+        ...state.data,
+        education: state.data.education.filter((e) => e.id !== id),
+      },
+      isDirty: true,
+    })),
+
+  addExperience: (experience) =>
+    set((state) => ({
+      data: {
+        ...state.data,
+        experience: [...state.data.experience, experience],
+      },
+      isDirty: true,
+    })),
+  updateExperience: (id, experience) =>
+    set((state) => ({
+      data: {
+        ...state.data,
+        experience: state.data.experience.map((e) =>
+          e.id === id ? { ...e, ...experience } : e
+        ),
+      },
+      isDirty: true,
+    })),
+  removeExperience: (id) =>
+    set((state) => ({
+      data: {
+        ...state.data,
+        experience: state.data.experience.filter((e) => e.id !== id),
+      },
+      isDirty: true,
+    })),
+
+  addSkill: (skill) =>
+    set((state) => ({
+      data: {
+        ...state.data,
+        skills: [...state.data.skills, skill],
+      },
+      isDirty: true,
+    })),
+  updateSkill: (id, skill) =>
+    set((state) => ({
+      data: {
+        ...state.data,
+        skills: state.data.skills.map((s) =>
+          s.id === id ? { ...s, ...skill } : s
+        ),
+      },
+      isDirty: true,
+    })),
+  removeSkill: (id) =>
+    set((state) => ({
+      data: {
+        ...state.data,
+        skills: state.data.skills.filter((s) => s.id !== id),
+      },
+      isDirty: true,
+    })),
+
+  addProject: (project) =>
+    set((state) => ({
+      data: {
+        ...state.data,
+        projects: [...state.data.projects, project],
+      },
+      isDirty: true,
+    })),
+  updateProject: (id, project) =>
+    set((state) => ({
+      data: {
+        ...state.data,
+        projects: state.data.projects.map((p) =>
+          p.id === id ? { ...p, ...project } : p
+        ),
+      },
+      isDirty: true,
+    })),
+  removeProject: (id) =>
+    set((state) => ({
+      data: {
+        ...state.data,
+        projects: state.data.projects.filter((p) => p.id !== id),
+      },
+      isDirty: true,
+    })),
+
+  addCertification: (certification) =>
+    set((state) => ({
+      data: {
+        ...state.data,
+        certifications: [...state.data.certifications, certification],
+      },
+      isDirty: true,
+    })),
+  updateCertification: (id, certification) =>
+    set((state) => ({
+      data: {
+        ...state.data,
+        certifications: state.data.certifications.map((c) =>
+          c.id === id ? { ...c, ...certification } : c
+        ),
+      },
+      isDirty: true,
+    })),
+  removeCertification: (id) =>
+    set((state) => ({
+      data: {
+        ...state.data,
+        certifications: state.data.certifications.filter((c) => c.id !== id),
+      },
+      isDirty: true,
+    })),
+
+  loadCVData: (data) =>
+    set({
+      data,
+      isDirty: false,
+    }),
+
+  resetStore: () =>
+    set({
+      cvId: null,
+      title: "Untitled CV",
+      template: "modern",
+      data: { ...defaultCVData },
+      activeStep: 0,
+      isDirty: false,
+      isSaving: false,
+    }),
+}));
