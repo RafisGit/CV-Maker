@@ -139,14 +139,37 @@ supabase/
 | projects       | JSONB     | Project entries           |
 | certifications | JSONB     | Certification entries     |
 
-## Available Scripts
+## Antigravity Deployment
 
-| Command         | Description                 |
-| --------------- | --------------------------- |
-| `npm run dev`   | Start development server    |
-| `npm run build` | Build for production        |
-| `npm run start` | Start production server     |
-| `npm run lint`  | Run ESLint                  |
+This project is optimized for deployment on Antigravity hosting.
+
+### 1. Environment Variables
+
+Configure the following variables in the Antigravity dashboard:
+
+- `NEXT_PUBLIC_SUPABASE_URL`: Your Supabase project URL
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Your Supabase anonymous key
+
+### 2. Build Settings
+
+- **Build Command**: `npm run build`
+- **Output Directory**: `.next`
+- **Root Directory**: `./`
+
+### 3. Static Export (Optional)
+
+If you wish to deploy as a static site:
+1. Uncomment `output: "export"` in `next.config.ts`.
+2. Delete `src/app/auth/callback/route.ts` (or handle auth purely on the client).
+3. Build with `npm run build`.
+4. Deploy the `out` directory.
+
+## Deployment Checklist
+
+- [x] Run `npm run build` locally to verify.
+- [x] Ensure Supabase RLS policies are applied (run `supabase/schema.sql`).
+- [x] Set production environment variables.
+- [x] Verify PDF export works in the live environment.
 
 ## License
 

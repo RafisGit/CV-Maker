@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Navbar from "@/components/ui/Navbar";
 import CVBuilder from "@/components/CVBuilder";
 import { getCVById } from "@/lib/database";
+import { createClient } from "@/lib/supabase/client";
 import { useCVStore } from "@/store/cv-store";
 import { Loader2 } from "lucide-react";
 
@@ -24,6 +25,12 @@ export default function BuilderPage({
     resetStore();
 
     const loadCV = async () => {
+      const { data: { user } } = await createClient().auth.getUser();
+      if (!user) {
+        router.push("/auth/login");
+        return;
+      }
+
       try {
         const cv = await getCVById(id);
         if (!cv) {

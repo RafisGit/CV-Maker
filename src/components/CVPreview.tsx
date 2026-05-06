@@ -27,18 +27,35 @@ const CVPreview = forwardRef<HTMLDivElement, CVPreviewProps>(
     };
 
     return (
-      <div className="bg-gray-100 p-4 rounded-lg overflow-auto h-full">
+      <div className="bg-gray-100 p-4 rounded-lg overflow-auto h-full flex justify-center">
+        {/* UI Scaling Container */}
         <div
-          ref={ref}
-          className="bg-white shadow-lg mx-auto"
           style={{
-            width: "210mm",
-            minHeight: "297mm",
-            transform: "scale(0.55)",
-            transformOrigin: "top center",
+            width: "calc(210mm * 0.55)",
+            height: "calc(297mm * 0.55)",
+            overflow: "hidden",
+            boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)",
           }}
         >
-          {renderTemplate()}
+          {/* Transform Layer */}
+          <div
+            style={{
+              transform: "scale(0.55)",
+              transformOrigin: "top left",
+            }}
+          >
+            {/* Capture Target (Full Size) */}
+            <div
+              ref={ref}
+              className="bg-white"
+              style={{
+                width: "210mm",
+                minHeight: "297mm",
+              }}
+            >
+              {renderTemplate()}
+            </div>
+          </div>
         </div>
       </div>
     );

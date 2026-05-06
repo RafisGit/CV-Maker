@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Navbar from "@/components/ui/Navbar";
 import { getUserCVs, createCV, deleteCV, duplicateCV } from "@/lib/database";
+import { createClient } from "@/lib/supabase/client";
 import { CV } from "@/types/cv";
 import {
   Plus,
@@ -38,8 +39,16 @@ export default function DashboardPage() {
   }, []);
 
   useEffect(() => {
-    loadCVs();
-  }, [loadCVs]);
+    const checkAuth = async () => {
+      const { data: { user } } = await createClient().auth.getUser();
+      if (!user) {
+        router.push("/auth/login");
+        return;
+      }
+      loadCVs();
+    };
+    checkAuth();
+  }, [loadCVs, router]);
 
   const handleCreate = async () => {
     setCreating(true);
