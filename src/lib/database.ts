@@ -1,15 +1,39 @@
 import { createClient } from "@/lib/supabase/client";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { CV, CVData, TemplateType, defaultCVData } from "@/types/cv";
 import { v4 as uuidv4 } from "uuid";
 
+const LOCAL_STORAGE_KEY = "cv_maker_local_cvs";
 
+function getLocalCVs(): CV[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const data = localStorage.getItem(LOCAL_STORAGE_KEY);
+    return data ? JSON.parse(data) : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveLocalCVs(cvs: CV[]) {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(cvs));
+  } catch (err) {
+    console.error("Error saving CVs to LocalStorage:", err);
+  }
+}
 
 export async function getUserCVs(): Promise<CV[]> {
+  if (!isSupabaseConfigured()) {
+    return getLocalCVs();
+  }
+
   try {
     const {
       data: { user },
     } = await createClient().auth.getUser();
-    if (!user) throw new Error("Not authenticated");
+    if (!user) return getLocalCVs();
 
     const { data, error } = await createClient()
       .from("cvs")
@@ -60,17 +84,25 @@ export async function getUserCVs(): Promise<CV[]> {
       };
     });
   } catch (err: any) {
-    console.error("Error in getUserCVs:", err.message || err);
-    throw err;
+    console.warn("Falling back to local storage for getUserCVs:", err.message || err);
+    return getLocalCVs();
   }
 }
 
 export async function getCVById(id: string): Promise<CV | null> {
+  if (!isSupabaseConfigured()) {
+    const cvs = getLocalCVs();
+    return cvs.find((c) => c.id === id) || null;
+  }
+
   try {
     const {
       data: { user },
     } = await createClient().auth.getUser();
-    if (!user) throw new Error("Not authenticated");
+    if (!user) {
+      const cvs = getLocalCVs();
+      return cvs.find((c) => c.id === id) || null;
+    }
 
     const { data, error } = await createClient()
       .from("cvs")
@@ -96,11 +128,10 @@ export async function getCVById(id: string): Promise<CV | null> {
       .eq("user_id", user.id)
       .single();
 
-    if (error) {
-      console.error("Error fetching CV by ID:", error.message);
-      return null;
+    if (error || !data) {
+      const cvs = getLocalCVs();
+      return cvs.find((c) => c.id === id) || null;
     }
-    if (!data) return null;
 
     const cvDataRow = Array.isArray(data.cv_data)
       ? data.cv_data[0]
@@ -125,8 +156,9 @@ export async function getCVById(id: string): Promise<CV | null> {
         : { ...defaultCVData },
     };
   } catch (err: any) {
-    console.error("Error in getCVById:", err.message || err);
-    return null;
+    console.warn("Falling back to local storage for getCVById:", err.message || err);
+    const cvs = getLocalCVs();
+    return cvs.find((c) => c.id === id) || null;
   }
 }
 
@@ -134,13 +166,38 @@ export async function createCV(
   title: string,
   template: TemplateType = "modern"
 ): Promise<string> {
+  const cvId = uuidv4();
+  const now = new Date().toISOString();
+
+  const newCv: CV = {
+    id: cvId,
+    user_id: "demo-user",
+    title,
+    template,
+    created_at: now,
+    updated_at: now,
+    cv_data: JSON.parse(JSON.stringify(defaultCVData)),
+  };
+
+  if (!isSupabaseConfigured()) {
+    const cvs = getLocalCVs();
+    cvs.unshift(newCv);
+    saveLocalCVs(cvs);
+    return cvId;
+  }
+
   try {
     const {
       data: { user },
     } = await createClient().auth.getUser();
-    if (!user) throw new Error("Not authenticated");
+    if (!user) {
+      const cvs = getLocalCVs();
+      cvs.unshift(newCv);
+      saveLocalCVs(cvs);
+      return cvId;
+    }
 
-    const cvId = uuidv4();
+    newCv.user_id = user.id;
 
     const { error: cvError } = await createClient().from("cvs").insert({
       id: cvId,
@@ -166,8 +223,11 @@ export async function createCV(
 
     return cvId;
   } catch (err: any) {
-    console.error("Error in createCV:", err.message || err);
-    throw err;
+    console.warn("Falling back to local storage for createCV:", err.message || err);
+    const cvs = getLocalCVs();
+    cvs.unshift(newCv);
+    saveLocalCVs(cvs);
+    return cvId;
   }
 }
 
@@ -177,18 +237,47 @@ export async function updateCV(
   template: TemplateType,
   cvData: CVData
 ): Promise<void> {
+  const now = new Date().toISOString();
+
+  // Always update local storage as backup
+  const cvs = getLocalCVs();
+  const index = cvs.findIndex((c) => c.id === id);
+  if (index !== -1) {
+    cvs[index] = {
+      ...cvs[index],
+      title,
+      template,
+      cv_data: cvData,
+      updated_at: now,
+    };
+    saveLocalCVs(cvs);
+  } else {
+    cvs.unshift({
+      id,
+      user_id: "demo-user",
+      title,
+      template,
+      created_at: now,
+      updated_at: now,
+      cv_data: cvData,
+    });
+    saveLocalCVs(cvs);
+  }
+
+  if (!isSupabaseConfigured()) return;
+
   try {
     const {
       data: { user },
     } = await createClient().auth.getUser();
-    if (!user) throw new Error("Not authenticated");
+    if (!user) return;
 
     const { error: cvError } = await createClient()
       .from("cvs")
       .update({
         title,
         template,
-        updated_at: new Date().toISOString(),
+        updated_at: now,
       })
       .eq("id", id)
       .eq("user_id", user.id);
@@ -209,17 +298,21 @@ export async function updateCV(
 
     if (dataError) throw dataError;
   } catch (err: any) {
-    console.error("Error in updateCV:", err.message || err);
-    throw err;
+    console.warn("Falling back to local storage for updateCV:", err.message || err);
   }
 }
 
 export async function deleteCV(id: string): Promise<void> {
+  const cvs = getLocalCVs().filter((c) => c.id !== id);
+  saveLocalCVs(cvs);
+
+  if (!isSupabaseConfigured()) return;
+
   try {
     const {
       data: { user },
     } = await createClient().auth.getUser();
-    if (!user) throw new Error("Not authenticated");
+    if (!user) return;
 
     await createClient().from("cv_data").delete().eq("cv_id", id);
 
@@ -231,27 +324,49 @@ export async function deleteCV(id: string): Promise<void> {
 
     if (error) throw error;
   } catch (err: any) {
-    console.error("Error in deleteCV:", err.message || err);
-    throw err;
+    console.warn("Falling back to local storage for deleteCV:", err.message || err);
   }
 }
 
 export async function duplicateCV(id: string): Promise<string> {
-  try {
-    const cv = await getCVById(id);
-    if (!cv) throw new Error("CV not found");
+  const cv = await getCVById(id);
+  if (!cv) throw new Error("CV not found");
 
+  const newCvId = uuidv4();
+  const now = new Date().toISOString();
+
+  const newCv: CV = {
+    id: newCvId,
+    user_id: cv.user_id,
+    title: `${cv.title} (Copy)`,
+    template: cv.template,
+    created_at: now,
+    updated_at: now,
+    cv_data: JSON.parse(JSON.stringify(cv.cv_data)),
+  };
+
+  if (!isSupabaseConfigured()) {
+    const cvs = getLocalCVs();
+    cvs.unshift(newCv);
+    saveLocalCVs(cvs);
+    return newCvId;
+  }
+
+  try {
     const {
       data: { user },
     } = await createClient().auth.getUser();
-    if (!user) throw new Error("Not authenticated");
-
-    const newCvId = uuidv4();
+    if (!user) {
+      const cvs = getLocalCVs();
+      cvs.unshift(newCv);
+      saveLocalCVs(cvs);
+      return newCvId;
+    }
 
     const { error: cvError } = await createClient().from("cvs").insert({
       id: newCvId,
       user_id: user.id,
-      title: `${cv.title} (Copy)`,
+      title: newCv.title,
       template: cv.template,
     });
 
@@ -272,7 +387,10 @@ export async function duplicateCV(id: string): Promise<string> {
 
     return newCvId;
   } catch (err: any) {
-    console.error("Error in duplicateCV:", err.message || err);
-    throw err;
+    console.warn("Falling back to local storage for duplicateCV:", err.message || err);
+    const cvs = getLocalCVs();
+    cvs.unshift(newCv);
+    saveLocalCVs(cvs);
+    return newCvId;
   }
 }

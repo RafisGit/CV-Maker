@@ -1,44 +1,27 @@
 "use client";
 
 import { CVData } from "@/types/cv";
+import { ColorTheme } from "@/lib/templates/colors";
 import { Mail, Phone, MapPin, Link2, Globe } from "lucide-react";
-
-interface TemplateProps {
-  data: CVData;
-}
 
 function formatDate(date: string): string {
   if (!date) return "";
   const [year, month] = date.split("-");
-  const months = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
-  ];
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
   return `${months[parseInt(month) - 1]} ${year}`;
 }
 
-export default function ModernTemplate({ data }: TemplateProps) {
-  const { personalInfo, education, experience, skills, projects, certifications } =
-    data;
+export default function ModernTemplate({ data, colorTheme }: { data: CVData; colorTheme: ColorTheme }) {
+  const { personalInfo, education, experience, skills, projects, certifications } = data;
 
   return (
     <div className="bg-white text-gray-900 w-full" style={{ fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" }}>
       {/* Header */}
-      <div className="bg-blue-600 text-white px-8 py-6">
+      <div className="px-8 py-6" style={{ backgroundColor: colorTheme.headerBg, color: colorTheme.headerText }}>
         <h1 className="text-2xl font-bold tracking-wide">
           {personalInfo.fullName || "Your Name"}
         </h1>
-        <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2 text-blue-100 text-xs">
+        <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2 text-xs" style={{ color: `${colorTheme.headerText}cc` }}>
           {personalInfo.email && (
             <span className="flex items-center gap-1">
               <Mail className="h-3 w-3" />
@@ -76,7 +59,7 @@ export default function ModernTemplate({ data }: TemplateProps) {
         {/* Summary */}
         {personalInfo.summary && (
           <section>
-            <h2 className="text-sm font-bold uppercase tracking-wider text-blue-600 border-b-2 border-blue-600 pb-1 mb-2">
+            <h2 className="text-sm font-bold uppercase tracking-wider pb-1 mb-2" style={{ color: colorTheme.primary, borderBottom: `2px solid ${colorTheme.primary}` }}>
               Professional Summary
             </h2>
             <p className="text-xs leading-relaxed text-gray-700">
@@ -88,7 +71,7 @@ export default function ModernTemplate({ data }: TemplateProps) {
         {/* Experience */}
         {experience.length > 0 && (
           <section>
-            <h2 className="text-sm font-bold uppercase tracking-wider text-blue-600 border-b-2 border-blue-600 pb-1 mb-2">
+            <h2 className="text-sm font-bold uppercase tracking-wider pb-1 mb-2" style={{ color: colorTheme.primary, borderBottom: `2px solid ${colorTheme.primary}` }}>
               Experience
             </h2>
             <div className="space-y-3">
@@ -121,7 +104,7 @@ export default function ModernTemplate({ data }: TemplateProps) {
         {/* Education */}
         {education.length > 0 && (
           <section>
-            <h2 className="text-sm font-bold uppercase tracking-wider text-blue-600 border-b-2 border-blue-600 pb-1 mb-2">
+            <h2 className="text-sm font-bold uppercase tracking-wider pb-1 mb-2" style={{ color: colorTheme.primary, borderBottom: `2px solid ${colorTheme.primary}` }}>
               Education
             </h2>
             <div className="space-y-3">
@@ -136,14 +119,11 @@ export default function ModernTemplate({ data }: TemplateProps) {
                       <p className="text-xs text-gray-600">{edu.institution}</p>
                     </div>
                     <span className="text-xs text-gray-500 whitespace-nowrap ml-4">
-                      {formatDate(edu.startDate)} &ndash;{" "}
-                      {formatDate(edu.endDate)}
+                      {formatDate(edu.startDate)} &ndash; {formatDate(edu.endDate)}
                     </span>
                   </div>
                   {edu.description && (
-                    <p className="text-xs text-gray-700 mt-1">
-                      {edu.description}
-                    </p>
+                    <p className="text-xs text-gray-700 mt-1">{edu.description}</p>
                   )}
                 </div>
               ))}
@@ -154,18 +134,19 @@ export default function ModernTemplate({ data }: TemplateProps) {
         {/* Skills */}
         {skills.length > 0 && (
           <section>
-            <h2 className="text-sm font-bold uppercase tracking-wider text-blue-600 border-b-2 border-blue-600 pb-1 mb-2">
+            <h2 className="text-sm font-bold uppercase tracking-wider pb-1 mb-2" style={{ color: colorTheme.primary, borderBottom: `2px solid ${colorTheme.primary}` }}>
               Skills
             </h2>
             <div className="flex flex-wrap gap-1.5">
               {skills.map((skill) => (
                 <span
                   key={skill.id}
-                  className="bg-blue-50 text-blue-700 px-2 py-0.5 rounded text-xs font-medium"
+                  className="px-2 py-0.5 rounded text-xs font-medium"
+                  style={{ backgroundColor: colorTheme.skillBg, color: colorTheme.skillText }}
                 >
                   {skill.name}
                   {skill.level !== "Intermediate" && (
-                    <span className="text-blue-400 ml-1">
+                    <span style={{ color: `${colorTheme.skillText}99` }} className="ml-1">
                       ({skill.level})
                     </span>
                   )}
@@ -178,7 +159,7 @@ export default function ModernTemplate({ data }: TemplateProps) {
         {/* Projects */}
         {projects.length > 0 && (
           <section>
-            <h2 className="text-sm font-bold uppercase tracking-wider text-blue-600 border-b-2 border-blue-600 pb-1 mb-2">
+            <h2 className="text-sm font-bold uppercase tracking-wider pb-1 mb-2" style={{ color: colorTheme.primary, borderBottom: `2px solid ${colorTheme.primary}` }}>
               Projects
             </h2>
             <div className="space-y-2">
@@ -187,20 +168,16 @@ export default function ModernTemplate({ data }: TemplateProps) {
                   <div className="flex items-center gap-2">
                     <h3 className="text-sm font-semibold">{project.name}</h3>
                     {project.link && (
-                      <span className="text-xs text-blue-600">
+                      <span className="text-xs" style={{ color: colorTheme.primary }}>
                         {project.link}
                       </span>
                     )}
                   </div>
                   {project.technologies && (
-                    <p className="text-xs text-gray-500 italic">
-                      {project.technologies}
-                    </p>
+                    <p className="text-xs text-gray-500 italic">{project.technologies}</p>
                   )}
                   {project.description && (
-                    <p className="text-xs text-gray-700 mt-0.5">
-                      {project.description}
-                    </p>
+                    <p className="text-xs text-gray-700 mt-0.5">{project.description}</p>
                   )}
                 </div>
               ))}
@@ -211,7 +188,7 @@ export default function ModernTemplate({ data }: TemplateProps) {
         {/* Certifications */}
         {certifications.length > 0 && (
           <section>
-            <h2 className="text-sm font-bold uppercase tracking-wider text-blue-600 border-b-2 border-blue-600 pb-1 mb-2">
+            <h2 className="text-sm font-bold uppercase tracking-wider pb-1 mb-2" style={{ color: colorTheme.primary, borderBottom: `2px solid ${colorTheme.primary}` }}>
               Certifications
             </h2>
             <div className="space-y-1.5">
@@ -222,9 +199,7 @@ export default function ModernTemplate({ data }: TemplateProps) {
                     <p className="text-xs text-gray-600">{cert.issuer}</p>
                   </div>
                   {cert.date && (
-                    <span className="text-xs text-gray-500">
-                      {formatDate(cert.date)}
-                    </span>
+                    <span className="text-xs text-gray-500">{formatDate(cert.date)}</span>
                   )}
                 </div>
               ))}

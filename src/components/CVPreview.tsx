@@ -1,38 +1,29 @@
 "use client";
 
 import { CVData, TemplateType } from "@/types/cv";
-import ModernTemplate from "@/components/templates/ModernTemplate";
-import MinimalTemplate from "@/components/templates/MinimalTemplate";
-import ProfessionalTemplate from "@/components/templates/ProfessionalTemplate";
+import { getTemplateComponent } from "@/lib/templates/registry";
+import { getColorTheme } from "@/lib/templates/colors";
 import { forwardRef } from "react";
 
 interface CVPreviewProps {
   data: CVData;
   template: TemplateType;
+  colorTheme?: string;
+  scale?: number;
 }
 
 const CVPreview = forwardRef<HTMLDivElement, CVPreviewProps>(
-  ({ data, template }, ref) => {
-    const renderTemplate = () => {
-      switch (template) {
-        case "modern":
-          return <ModernTemplate data={data} />;
-        case "minimal":
-          return <MinimalTemplate data={data} />;
-        case "professional":
-          return <ProfessionalTemplate data={data} />;
-        default:
-          return <ModernTemplate data={data} />;
-      }
-    };
+  ({ data, template, colorTheme = "blue", scale = 0.55 }, ref) => {
+    const TemplateComponent = getTemplateComponent(template);
+    const theme = getColorTheme(colorTheme);
 
     return (
       <div className="bg-gray-100 p-4 rounded-lg overflow-auto h-full flex justify-center">
         {/* UI Scaling Container */}
         <div
           style={{
-            width: "calc(210mm * 0.55)",
-            height: "calc(297mm * 0.55)",
+            width: `calc(210mm * ${scale})`,
+            height: `calc(297mm * ${scale})`,
             overflow: "hidden",
             boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)",
           }}
@@ -40,7 +31,7 @@ const CVPreview = forwardRef<HTMLDivElement, CVPreviewProps>(
           {/* Transform Layer */}
           <div
             style={{
-              transform: "scale(0.55)",
+              transform: `scale(${scale})`,
               transformOrigin: "top left",
             }}
           >
@@ -53,7 +44,7 @@ const CVPreview = forwardRef<HTMLDivElement, CVPreviewProps>(
                 minHeight: "297mm",
               }}
             >
-              {renderTemplate()}
+              <TemplateComponent data={data} colorTheme={theme} />
             </div>
           </div>
         </div>

@@ -1,0 +1,19 @@
+
+> cv-maker@0.1.0 dev
+> next dev --hostname 127.0.0.1 --port 3000
+
+▲ Next.js 16.2.4 (Turbopack)
+- Local:         http://127.0.0.1:3000
+- Network:       http://127.0.0.1:3000
+- Environments: .env.local
+✓ Ready in 271ms
+Creating turbopack project { dir: 'D:\\Work\\2026\\CVMaker\\CV-Maker', testMode: true }
+
+ GET / 200 in 1668ms (next.js: 1497ms, proxy.ts: 52ms, application-code: 119ms)
+✓ Compiled in 19ms
+ GET / 200 in 131ms (next.js: 53ms, proxy.ts: 28ms, application-code: 51ms)
+ GET / 200 in 29ms (next.js: 6ms, proxy.ts: 2ms, application-code: 20ms)
+ GET / 404 in 754ms (next.js: -100371µs, proxy.ts: 707ms, application-code: 147ms)
+ GET / 404 in 94ms (next.js: -8582µs, proxy.ts: 77ms, application-code: 26ms)
+ GET / 404 in 96ms (next.js: -6625µs, proxy.ts: 86ms, application-code: 17ms)
+[?25h

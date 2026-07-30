@@ -17,6 +17,7 @@ interface CVStore {
   cvId: string | null;
   title: string;
   template: TemplateType;
+  colorTheme: string;
   data: CVData;
   activeStep: number;
   isDirty: boolean;
@@ -25,6 +26,7 @@ interface CVStore {
   setCvId: (id: string | null) => void;
   setTitle: (title: string) => void;
   setTemplate: (template: TemplateType) => void;
+  setColorTheme: (colorTheme: string) => void;
   setActiveStep: (step: number) => void;
   setIsSaving: (saving: boolean) => void;
   markClean: () => void;
@@ -62,6 +64,7 @@ export const useCVStore = create<CVStore>((set) => ({
   cvId: null,
   title: "Untitled CV",
   template: "modern",
+  colorTheme: "blue",
   data: { ...defaultCVData },
   activeStep: 0,
   isDirty: false,
@@ -70,6 +73,7 @@ export const useCVStore = create<CVStore>((set) => ({
   setCvId: (id) => set({ cvId: id }),
   setTitle: (title) => set({ title, isDirty: true }),
   setTemplate: (template) => set({ template, isDirty: true }),
+  setColorTheme: (colorTheme) => set({ colorTheme, isDirty: true }),
   setActiveStep: (step) => set({ activeStep: step }),
   setIsSaving: (saving) => set({ isSaving: saving }),
   markClean: () => set({ isDirty: false }),
@@ -229,6 +233,7 @@ export const useCVStore = create<CVStore>((set) => ({
       cvId: null,
       title: "Untitled CV",
       template: "modern",
+      colorTheme: "blue",
       data: { ...defaultCVData },
       activeStep: 0,
       isDirty: false,

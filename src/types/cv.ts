@@ -60,13 +60,15 @@ export interface CVData {
   certifications: Certification[];
 }
 
-export type TemplateType = "modern" | "minimal" | "professional";
+// Template type is now a string to support unlimited templates
+export type TemplateType = string;
 
 export interface CV {
   id: string;
   user_id: string;
   title: string;
   template: TemplateType;
+  colorTheme?: string;
   created_at: string;
   updated_at: string;
   cv_data: CVData;
