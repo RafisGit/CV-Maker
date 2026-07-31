@@ -19,7 +19,7 @@ export default function BuilderPage({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
-  const { setCvId, setTitle, setTemplate, loadCVData, resetStore } =
+  const { setCvId, setTitle, setTemplate, setColorTheme, loadCVData, resetStore } =
     useCVStore();
 
   useEffect(() => {
@@ -47,6 +47,7 @@ export default function BuilderPage({
         setCvId(cv.id);
         setTitle(cv.title);
         setTemplate(cv.template);
+        if (cv.colorTheme) setColorTheme(cv.colorTheme);
         loadCVData(cv.cv_data);
       } catch {
         setError("Failed to load CV");

@@ -1,7 +1,7 @@
 "use client";
 
-import { getTemplateMetadata, getTemplateComponent, getTemplatesByCategory } from "@/lib/templates/registry";
-import { getColorTheme, colorThemeOrder, colorThemes, colorThemeNames, ColorThemeId } from "@/lib/templates/colors";
+import { getTemplateMetadata, getTemplatesByCategory } from "@/lib/templates/registry";
+import { colorThemeOrder, colorThemes, colorThemeNames, ColorThemeId } from "@/lib/templates/colors";
 import { sampleResumeData } from "@/lib/templates/sample-data";
 import Navbar from "@/components/ui/Navbar";
 import { createCV } from "@/lib/database";
@@ -9,6 +9,7 @@ import { useRouter, useParams } from "next/navigation";
 import { useState, useMemo } from "react";
 import { ArrowLeft, Star, Loader2, Check, Sparkles, Layout, Type } from "lucide-react";
 import Link from "next/link";
+import TemplateThumbnail from "@/components/templates/TemplateThumbnail";
 
 export default function TemplateDetail() {
   const params = useParams();
@@ -42,9 +43,6 @@ export default function TemplateDetail() {
       </div>
     );
   }
-
-  const TemplateComponent = getTemplateComponent(template.id);
-  const currentTheme = getColorTheme(selectedColorId);
 
   const handleUseTemplate = async () => {
     setIsCreating(true);
@@ -87,13 +85,9 @@ export default function TemplateDetail() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 flex flex-col lg:flex-row gap-10">
         
         {/* Left Column: Preview */}
-        <div className="w-full lg:w-3/5 flex justify-center">
-          <div className="relative bg-white rounded-xl shadow-2xl overflow-hidden border border-slate-200" style={{ width: '100%', maxWidth: 'calc(210mm * 0.55)', minHeight: 'calc(297mm * 0.55)' }}>
-            <div className="absolute inset-0 bg-slate-50 border border-slate-200 shadow-inner rounded-xl overflow-hidden">
-               <div style={{ width: '210mm', minHeight: '297mm', transform: 'scale(0.55)', transformOrigin: 'top left', position: 'absolute', top: 0, left: 0 }}>
-                 <TemplateComponent data={sampleResumeData} colorTheme={currentTheme} />
-               </div>
-            </div>
+        <div className="w-full lg:w-3/5 flex justify-center items-start">
+          <div className="w-full max-w-xl bg-white rounded-xl shadow-2xl overflow-hidden border border-slate-200">
+            <TemplateThumbnail templateId={template.id} data={sampleResumeData} colorTheme={selectedColorId} />
           </div>
         </div>
 
@@ -203,26 +197,19 @@ export default function TemplateDetail() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16 pt-16 border-t border-slate-200">
           <h2 className="text-2xl font-bold text-slate-900 mb-8">More from this category</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {relatedTemplates.map(related => {
-              const RelTemplateComponent = getTemplateComponent(related.id);
-              const theme = getColorTheme(related.colorDefault);
-
-              return (
-                <Link href={`/templates/${related.id}`} key={related.id} className="group flex flex-col bg-white rounded-xl shadow-sm hover:shadow-md border border-slate-200 overflow-hidden transition-all duration-200">
-                  <div className="relative aspect-[210/297] bg-slate-100 overflow-hidden flex items-center justify-center border-b border-slate-100">
-                    <div className="w-full h-full flex items-center justify-center pointer-events-none relative z-10 transition-transform duration-500 group-hover:scale-105">
-                       <div style={{ width: '210mm', minHeight: '297mm', transform: 'scale(0.22)', transformOrigin: 'top left', position: 'absolute', top: 0, left: 0 }}>
-                         <RelTemplateComponent data={sampleResumeData} colorTheme={theme} />
-                       </div>
-                    </div>
+            {relatedTemplates.map(related => (
+              <Link href={`/templates/${related.id}`} key={related.id} className="group flex flex-col bg-white rounded-xl shadow-sm hover:shadow-md border border-slate-200 overflow-hidden transition-all duration-200">
+                <div className="relative aspect-[210/297] bg-slate-100 overflow-hidden border-b border-slate-100">
+                  <div className="w-full h-full transition-transform duration-500 group-hover:scale-105">
+                    <TemplateThumbnail templateId={related.id} data={sampleResumeData} colorTheme={related.colorDefault} />
                   </div>
-                  <div className="p-4">
-                    <h3 className="font-bold text-slate-900">{related.name}</h3>
-                    <p className="text-sm text-slate-500 line-clamp-1 mt-1">{related.description}</p>
-                  </div>
-                </Link>
-              );
-            })}
+                </div>
+                <div className="p-4">
+                  <h3 className="font-bold text-slate-900">{related.name}</h3>
+                  <p className="text-sm text-slate-500 line-clamp-1 mt-1">{related.description}</p>
+                </div>
+              </Link>
+            ))}
           </div>
         </div>
       )}

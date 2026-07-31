@@ -23,6 +23,7 @@ import {
   Award,
   Download,
   Save,
+  Check,
   Loader2,
   ChevronLeft,
   ChevronRight,
@@ -65,20 +66,24 @@ export default function CVBuilder() {
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [showPreview, setShowPreview] = useState(false);
   const [showColorPicker, setShowColorPicker] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
+  const [justSaved, setJustSaved] = useState(false);
   const allTemplates = getAllTemplates();
 
   const handleSave = useCallback(async () => {
-    if (!cvId || !isDirty) return;
+    if (!cvId) return;
     setIsSaving(true);
     try {
-      await updateCV(cvId, title, template, data);
+      await updateCV(cvId, title, template, data, colorTheme);
       markClean();
+      setJustSaved(true);
+      setTimeout(() => setJustSaved(false), 2000);
     } catch (err) {
       console.error("Failed to save:", err);
     } finally {
       setIsSaving(false);
     }
-  }, [cvId, isDirty, title, template, data, setIsSaving, markClean]);
+  }, [cvId, title, template, data, colorTheme, setIsSaving, markClean]);
 
   // Auto-save with debounce
   useEffect(() => {
@@ -100,25 +105,52 @@ export default function CVBuilder() {
   }, [isDirty, cvId, handleSave]);
 
   const handleExportPDF = async () => {
-    if (!previewRef.current) return;
+    if (!previewRef.current || isExporting) return;
+    setIsExporting(true);
 
-    const canvas = await html2canvas(previewRef.current, {
-      scale: 2,
-      useCORS: true,
-      backgroundColor: "#ffffff",
-    });
+    try {
+      const sourceEl = previewRef.current;
 
-    const imgData = canvas.toDataURL("image/png");
-    const pdf = new jsPDF("p", "mm", "a4");
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = pdf.internal.pageSize.getHeight();
-    const imgWidth = canvas.width;
-    const imgHeight = canvas.height;
-    const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
-    const imgX = (pdfWidth - imgWidth * ratio) / 2;
+      const container = document.createElement("div");
+      container.style.position = "fixed";
+      container.style.left = "-9999px";
+      container.style.top = "0px";
+      container.style.width = "794px";
+      container.style.backgroundColor = "#ffffff";
+      container.style.zIndex = "-9999";
 
-    pdf.addImage(imgData, "PNG", imgX, 0, imgWidth * ratio, imgHeight * ratio);
-    pdf.save(`${title || "cv"}.pdf`);
+      const clone = sourceEl.cloneNode(true) as HTMLElement;
+      clone.style.transform = "none";
+      clone.style.width = "794px";
+      clone.style.minHeight = "1123px";
+
+      container.appendChild(clone);
+      document.body.appendChild(container);
+
+      await new Promise((resolve) => setTimeout(resolve, 150));
+
+      const canvas = await html2canvas(clone, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: "#ffffff",
+        logging: false,
+      });
+
+      document.body.removeChild(container);
+
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF("p", "mm", "a4");
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+
+      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+      pdf.save(`${title || "CV"}.pdf`);
+    } catch (err) {
+      console.error("Failed to export PDF:", err);
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   const renderForm = () => {
@@ -212,24 +244,31 @@ export default function CVBuilder() {
             {/* Save */}
             <button
               onClick={handleSave}
-              disabled={isSaving || !isDirty}
-              className="px-3 py-1.5 border border-border rounded-lg text-sm hover:bg-muted transition-colors flex items-center gap-1.5 disabled:opacity-50 cursor-pointer"
+              disabled={isSaving}
+              className="px-3 py-1.5 border border-border rounded-lg text-sm hover:bg-muted transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
             >
               {isSaving ? (
                 <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              ) : justSaved ? (
+                <Check className="h-3.5 w-3.5 text-emerald-600" />
               ) : (
                 <Save className="h-3.5 w-3.5" />
               )}
-              {isSaving ? "Saving..." : isDirty ? "Save" : "Saved"}
+              {isSaving ? "Saving..." : justSaved ? "Saved!" : isDirty ? "Save" : "Saved"}
             </button>
 
             {/* Export PDF */}
             <button
               onClick={handleExportPDF}
-              className="bg-primary text-white px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-primary-hover transition-colors flex items-center gap-1.5 cursor-pointer"
+              disabled={isExporting}
+              className="bg-primary text-white px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-primary-hover transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-70"
             >
-              <Download className="h-3.5 w-3.5" />
-              PDF
+              {isExporting ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              ) : (
+                <Download className="h-3.5 w-3.5" />
+              )}
+              {isExporting ? "Exporting..." : "PDF"}
             </button>
           </div>
         </div>

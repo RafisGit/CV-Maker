@@ -142,6 +142,7 @@ export async function getCVById(id: string): Promise<CV | null> {
       user_id: data.user_id,
       title: data.title,
       template: data.template as TemplateType,
+      colorTheme: (data as any).colorTheme || "blue",
       created_at: data.created_at,
       updated_at: data.updated_at,
       cv_data: cvDataRow
@@ -235,7 +236,8 @@ export async function updateCV(
   id: string,
   title: string,
   template: TemplateType,
-  cvData: CVData
+  cvData: CVData,
+  colorTheme?: string
 ): Promise<void> {
   const now = new Date().toISOString();
 
@@ -247,6 +249,7 @@ export async function updateCV(
       ...cvs[index],
       title,
       template,
+      colorTheme: colorTheme || cvs[index].colorTheme || "blue",
       cv_data: cvData,
       updated_at: now,
     };
@@ -257,6 +260,7 @@ export async function updateCV(
       user_id: "demo-user",
       title,
       template,
+      colorTheme: colorTheme || "blue",
       created_at: now,
       updated_at: now,
       cv_data: cvData,
