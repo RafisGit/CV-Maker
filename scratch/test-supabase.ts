@@ -9,7 +9,7 @@ async function test() {
   if (error) {
     console.error('Error connecting to Supabase (likely tables not created yet):', error.message)
   } else {
-    console.log('Successfully connected to Supabase!')
+    console.log('Successfully connected to Supabase!', data)
   }
 }
 

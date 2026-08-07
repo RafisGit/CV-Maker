@@ -1,9 +1,9 @@
 "use client";
 
+import React, { forwardRef, memo } from "react";
 import { CVData, TemplateType } from "@/types/cv";
 import { getTemplateComponent } from "@/lib/templates/registry";
 import { getColorTheme } from "@/lib/templates/colors";
-import { forwardRef } from "react";
 
 interface CVPreviewProps {
   data: CVData;
@@ -12,20 +12,20 @@ interface CVPreviewProps {
   scale?: number;
 }
 
-const CVPreview = forwardRef<HTMLDivElement, CVPreviewProps>(
+const CVPreviewComponent = forwardRef<HTMLDivElement, CVPreviewProps>(
   ({ data, template, colorTheme = "blue", scale = 0.55 }, ref) => {
     const TemplateComponent = getTemplateComponent(template);
     const theme = getColorTheme(colorTheme);
 
     return (
-      <div className="bg-gray-100 p-4 rounded-lg overflow-auto h-full flex justify-center">
+      <div className="bg-muted/40 p-4 rounded-xl overflow-auto h-full flex justify-center items-start">
         {/* UI Scaling Container */}
         <div
+          className="my-auto shadow-2xl rounded-sm transition-transform duration-200"
           style={{
             width: `calc(210mm * ${scale})`,
-            height: `calc(297mm * ${scale})`,
-            overflow: "hidden",
-            boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)",
+            minHeight: `calc(297mm * ${scale})`,
+            backgroundColor: "#fff",
           }}
         >
           {/* Transform Layer */}
@@ -38,7 +38,7 @@ const CVPreview = forwardRef<HTMLDivElement, CVPreviewProps>(
             {/* Capture Target (Full Size) */}
             <div
               ref={ref}
-              className="bg-white"
+              className="bg-white text-black"
               style={{
                 width: "210mm",
                 minHeight: "297mm",
@@ -53,6 +53,7 @@ const CVPreview = forwardRef<HTMLDivElement, CVPreviewProps>(
   }
 );
 
-CVPreview.displayName = "CVPreview";
+CVPreviewComponent.displayName = "CVPreview";
 
+const CVPreview = memo(CVPreviewComponent);
 export default CVPreview;

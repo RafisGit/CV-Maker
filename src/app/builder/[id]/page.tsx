@@ -57,7 +57,7 @@ export default function BuilderPage({
     };
 
     loadCV();
-  }, [id, setCvId, setTitle, setTemplate, loadCVData, resetStore]);
+  }, [id, router, setCvId, setTitle, setTemplate, setColorTheme, loadCVData, resetStore]);
 
   if (loading) {
     return (

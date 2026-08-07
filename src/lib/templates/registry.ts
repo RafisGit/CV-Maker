@@ -1,6 +1,6 @@
 // Template Registry — Central mapping of all 30 template IDs to metadata and components
 
-import { TemplateMetadata } from "@/types/template";
+import { TemplateMetadata, IndustryType } from "@/types/template";
 import { CVData } from "@/types/cv";
 import { ColorTheme, getColorTheme } from "./colors";
 import React from "react";
@@ -606,7 +606,7 @@ export function getTemplatesByStyle(style: string): TemplateMetadata[] {
 }
 
 export function getTemplatesByIndustry(industry: string): TemplateMetadata[] {
-  return getAllTemplates().filter((t) => t.industries.includes(industry as any));
+  return getAllTemplates().filter((t) => t.industries.includes(industry as IndustryType));
 }
 
 export function getFeaturedTemplates(): TemplateMetadata[] {

@@ -16,8 +16,8 @@ export default function DarkTemplate({ data, colorTheme }: { data: CVData; color
   const { personalInfo, education, experience, skills, projects, certifications } = data;
 
   return (
-    <div style={{ fontFamily: "'Inter', sans-serif", backgroundColor: "#121212", color: "#e0e0e0", width: "100%", minHeight: "100%", padding: "2rem" }}>
-      <div style={{ border: `1px solid #333`, borderRadius: "16px", overflow: "hidden", backgroundColor: "#1e1e1e" }}>
+    <div style={{ fontFamily: "'Inter', sans-serif", backgroundColor: "#121212", color: "#e0e0e0", width: "100%", minHeight: "297mm", padding: "2rem" }}>
+      <div style={{ border: `1px solid #333`, borderRadius: "16px", overflow: "hidden", backgroundColor: "#1e1e1e", minHeight: "100%" }}>
         
         {/* Header */}
         <div style={{ backgroundColor: "#252525", padding: "3rem", borderBottom: `2px solid ${colorTheme.accent}` }}>
@@ -30,19 +30,19 @@ export default function DarkTemplate({ data, colorTheme }: { data: CVData; color
             {personalInfo.email && <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}><Mail size={16} color={colorTheme.accent} /> {personalInfo.email}</div>}
             {personalInfo.phone && <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}><Phone size={16} color={colorTheme.accent} /> {personalInfo.phone}</div>}
             {personalInfo.location && <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}><MapPin size={16} color={colorTheme.accent} /> {personalInfo.location}</div>}
-            {personalInfo.linkedin && <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}><Link2 size={16} color={colorTheme.accent} /> {personalInfo.linkedin}</div>}
+            {personalInfo.linkedin && <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}><Link2 size={16} color={colorTheme.accent} /> {personalInfo.linkedin}</div>}
             {personalInfo.website && <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}><Globe size={16} color={colorTheme.accent} /> {personalInfo.website}</div>}
           </div>
         </div>
 
-        <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
+        <div style={{ display: "flex", flexDirection: "row", flexWrap: "nowrap", alignItems: "stretch" }}>
           
           {/* Main Content */}
           <div style={{ flex: "1 1 60%", padding: "3rem", borderRight: "1px solid #333" }}>
             {experience.length > 0 && (
               <div style={{ marginBottom: "3rem" }}>
                 <h2 style={{ fontSize: "1.4rem", fontWeight: 600, color: "#ffffff", borderBottom: "1px solid #333", paddingBottom: "0.5rem", marginBottom: "2rem", textTransform: "uppercase", letterSpacing: "1px" }}>
-                  <span style={{ color: colorTheme.accent }}>//</span> Work Experience
+                  <span style={{ color: colorTheme.accent }}>{"//"}</span> Work Experience
                 </h2>
                 <div style={{ display: "flex", flexDirection: "column", gap: "2.5rem" }}>
                   {experience.map(exp => (
@@ -64,7 +64,7 @@ export default function DarkTemplate({ data, colorTheme }: { data: CVData; color
             {education.length > 0 && (
               <div>
                 <h2 style={{ fontSize: "1.4rem", fontWeight: 600, color: "#ffffff", borderBottom: "1px solid #333", paddingBottom: "0.5rem", marginBottom: "2rem", textTransform: "uppercase", letterSpacing: "1px" }}>
-                  <span style={{ color: colorTheme.accent }}>//</span> Education
+                  <span style={{ color: colorTheme.accent }}>{"//"}</span> Education
                 </h2>
                 <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
                   {education.map(edu => (
@@ -89,7 +89,7 @@ export default function DarkTemplate({ data, colorTheme }: { data: CVData; color
             {skills.length > 0 && (
               <div style={{ marginBottom: "3rem" }}>
                 <h2 style={{ fontSize: "1.2rem", fontWeight: 600, color: "#ffffff", marginBottom: "1.5rem", textTransform: "uppercase", letterSpacing: "1px" }}>
-                  <span style={{ color: colorTheme.accent }}>//</span> Skills
+                  <span style={{ color: colorTheme.accent }}>{"//"}</span> Skills
                 </h2>
                 <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
                   {skills.map(skill => (
@@ -109,7 +109,7 @@ export default function DarkTemplate({ data, colorTheme }: { data: CVData; color
             {projects.length > 0 && (
               <div style={{ marginBottom: "3rem" }}>
                 <h2 style={{ fontSize: "1.2rem", fontWeight: 600, color: "#ffffff", marginBottom: "1.5rem", textTransform: "uppercase", letterSpacing: "1px" }}>
-                  <span style={{ color: colorTheme.accent }}>//</span> Projects
+                  <span style={{ color: colorTheme.accent }}>{"//"}</span> Projects
                 </h2>
                 <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
                   {projects.map(proj => (
@@ -127,7 +127,7 @@ export default function DarkTemplate({ data, colorTheme }: { data: CVData; color
             {certifications.length > 0 && (
               <div>
                 <h2 style={{ fontSize: "1.2rem", fontWeight: 600, color: "#ffffff", marginBottom: "1.5rem", textTransform: "uppercase", letterSpacing: "1px" }}>
-                  <span style={{ color: colorTheme.accent }}>//</span> Certifications
+                  <span style={{ color: colorTheme.accent }}>{"//"}</span> Certifications
                 </h2>
                 <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
                   {certifications.map(cert => (

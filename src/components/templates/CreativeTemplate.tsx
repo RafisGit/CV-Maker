@@ -17,10 +17,10 @@ export default function CreativeTemplate({ data, colorTheme }: { data: CVData; c
   };
 
   return (
-    <div className="w-full flex min-h-[1056px] shadow-sm relative overflow-hidden" style={{ backgroundColor: "#ffffff", fontFamily: "Helvetica, Arial, sans-serif" }}>
+    <div className="w-full flex items-stretch min-h-[297mm] shadow-sm relative overflow-hidden" style={{ backgroundColor: "#ffffff", fontFamily: "Helvetica, Arial, sans-serif" }}>
       
       {/* Left Sidebar */}
-      <div className="w-[35%] p-8 flex flex-col gap-8 z-10" style={{ backgroundColor: colorTheme.sidebarBg, color: colorTheme.sidebarText }}>
+      <div className="w-[35%] p-8 flex flex-col gap-8 z-10 shrink-0" style={{ backgroundColor: colorTheme.sidebarBg, color: colorTheme.sidebarText }}>
         
         {/* Decorative Circle */}
         <div className="absolute top-[-50px] left-[-50px] w-40 h-40 rounded-full opacity-20" style={{ backgroundColor: colorTheme.accent }}></div>

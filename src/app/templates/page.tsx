@@ -1,10 +1,8 @@
 "use client";
 
-import { getAllTemplates, getTemplateComponent } from "@/lib/templates/registry";
-import { getColorTheme } from "@/lib/templates/colors";
+import { getAllTemplates } from "@/lib/templates/registry";
 import { sampleResumeData } from "@/lib/templates/sample-data";
 import TemplateThumbnail from "@/components/templates/TemplateThumbnail";
-import { TemplateMetadata } from "@/types/template";
 import Navbar from "@/components/ui/Navbar";
 import { createCV } from "@/lib/database";
 import { useRouter } from "next/navigation";
@@ -289,7 +287,7 @@ export default function TemplatesGallery() {
               </div>
               <h3 className="text-xl font-bold text-slate-800 mb-2">No templates found</h3>
               <p className="text-slate-500 mb-6 max-w-md mx-auto">
-                We couldn't find any templates matching your current filters. Try removing some filters to see more results.
+                We couldn&apos;t find any templates matching your current filters. Try removing some filters to see more results.
               </p>
               <button 
                 onClick={clearAllFilters}
@@ -301,17 +299,14 @@ export default function TemplatesGallery() {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredTemplates.map(template => {
-                const TemplateComponent = getTemplateComponent(template.id);
-                const theme = getColorTheme(template.colorDefault);
-
                 return (
                   <div key={template.id} className="group flex flex-col bg-white rounded-xl shadow-sm hover:shadow-xl border border-slate-200 overflow-hidden transition-all duration-300 transform hover:-translate-y-1">
                     
                     <div className="relative aspect-[210/297] bg-slate-100 overflow-hidden flex items-center justify-center border-b border-slate-100">
                       
                       {template.isNew && (
-                        <div className="absolute top-4 left-4 z-20">
-                          <span className="px-3 py-1 bg-blue-600 text-white text-xs font-bold rounded-full shadow-md flex items-center space-x-1">
+                        <div className="absolute top-3 right-3 z-20 pointer-events-none">
+                          <span className="px-2.5 py-1 bg-blue-600/90 text-white text-[11px] font-bold rounded-full shadow-md flex items-center backdrop-blur-sm">
                             <Sparkles className="h-3 w-3 mr-1" />
                             NEW
                           </span>

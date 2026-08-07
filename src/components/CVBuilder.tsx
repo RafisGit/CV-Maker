@@ -135,16 +135,105 @@ export default function CVBuilder() {
         allowTaint: true,
         backgroundColor: "#ffffff",
         logging: false,
+        onclone: (clonedDoc) => {
+          // 1. Monkey-patch getComputedStyle in cloned window so html2canvas never encounters lab/oklch color functions
+          const win = clonedDoc.defaultView;
+          if (win) {
+            const origGetComputedStyle = win.getComputedStyle;
+            win.getComputedStyle = function (elt: Element, pseudoElt?: string | null) {
+              const style = origGetComputedStyle.call(this, elt, pseudoElt);
+              return new Proxy(style, {
+                get(target: CSSStyleDeclaration, prop: string | symbol) {
+                  const val = Reflect.get(target, prop);
+                  if (typeof val === "string" && /(lab|oklch|oklab|color-mix)\(/i.test(val)) {
+                    return val.replace(/(lab|oklch|oklab|color-mix)\([^)]*\)/gi, "rgba(0,0,0,0.1)");
+                  }
+                  if (typeof val === "function") {
+                    return function (...args: unknown[]) {
+                      const res = val.apply(target, args);
+                      if (typeof res === "string" && /(lab|oklch|oklab|color-mix)\(/i.test(res)) {
+                        return res.replace(/(lab|oklch|oklab|color-mix)\([^)]*\)/gi, "rgba(0,0,0,0.1)");
+                      }
+                      return res;
+                    };
+                  }
+                  return val;
+                },
+              });
+            };
+          }
+
+          // 2. Delete CSSOM cssRules containing unsupported color functions
+          try {
+            Array.from(clonedDoc.styleSheets).forEach((sheet) => {
+              try {
+                const rules = Array.from(sheet.cssRules || []);
+                for (let i = rules.length - 1; i >= 0; i--) {
+                  const rule = rules[i];
+                  if (rule.cssText && /(lab|oklch|oklab|color-mix)\(/i.test(rule.cssText)) {
+                    sheet.deleteRule(i);
+                  }
+                }
+              } catch {
+                // Ignore cross-origin rules
+              }
+            });
+          } catch {
+            // Ignore stylesheet access issues
+          }
+
+          // 3. Clean up inline element styles
+          const allElements = clonedDoc.querySelectorAll<HTMLElement>("*");
+          allElements.forEach((el) => {
+            if (el.style && el.style.cssText) {
+              if (/(lab|oklch|oklab|color-mix)/i.test(el.style.cssText)) {
+                el.style.cssText = el.style.cssText.replace(/(lab|oklch|oklab|color-mix)\([^)]*\)/gi, "rgba(0,0,0,0.1)");
+              }
+            }
+          });
+        },
       });
 
       document.body.removeChild(container);
 
-      const imgData = canvas.toDataURL("image/png");
       const pdf = new jsPDF("p", "mm", "a4");
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = pdf.internal.pageSize.getHeight();
 
-      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+      const canvasWidth = canvas.width;
+      const canvasHeight = canvas.height;
+      const pageHeightInCanvasPx = Math.floor(canvasWidth * (297 / 210));
+      const totalPages = Math.ceil(canvasHeight / pageHeightInCanvasPx);
+
+      for (let i = 0; i < totalPages; i++) {
+        const pageCanvas = document.createElement("canvas");
+        pageCanvas.width = canvasWidth;
+        pageCanvas.height = pageHeightInCanvasPx;
+
+        const ctx = pageCanvas.getContext("2d");
+        if (ctx) {
+          ctx.fillStyle = "#ffffff";
+          ctx.fillRect(0, 0, canvasWidth, pageHeightInCanvasPx);
+          ctx.drawImage(
+            canvas,
+            0,
+            i * pageHeightInCanvasPx,
+            canvasWidth,
+            pageHeightInCanvasPx,
+            0,
+            0,
+            canvasWidth,
+            pageHeightInCanvasPx
+          );
+        }
+
+        const sliceData = pageCanvas.toDataURL("image/png");
+        if (i > 0) {
+          pdf.addPage();
+        }
+        pdf.addImage(sliceData, "PNG", 0, 0, pdfWidth, pdfHeight);
+      }
+
       pdf.save(`${title || "CV"}.pdf`);
     } catch (err) {
       console.error("Failed to export PDF:", err);

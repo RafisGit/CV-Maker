@@ -35,6 +35,7 @@ export default function MedicalTemplate({ data, colorTheme }: { data: CVData; co
           {personalInfo.phone && <span style={{ display: "flex", alignItems: "center", gap: "5px" }}><Phone size={14} color={colorTheme.primary} /> {personalInfo.phone}</span>}
           {personalInfo.location && <span style={{ display: "flex", alignItems: "center", gap: "5px" }}><MapPin size={14} color={colorTheme.primary} /> {personalInfo.location}</span>}
           {personalInfo.linkedin && <span style={{ display: "flex", alignItems: "center", gap: "5px" }}><Link2 size={14} color={colorTheme.primary} /> {personalInfo.linkedin}</span>}
+          {personalInfo.website && <span style={{ display: "flex", alignItems: "center", gap: "5px" }}><Globe size={14} color={colorTheme.primary} /> {personalInfo.website}</span>}
         </div>
       </header>
 

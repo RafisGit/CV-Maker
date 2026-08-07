@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { CVData } from "@/types/cv";
 import { getTemplateComponent } from "@/lib/templates/registry";
 import { getColorTheme } from "@/lib/templates/colors";
@@ -60,7 +60,7 @@ export default function TemplateThumbnail({
           pointerEvents: "none",
         }}
       >
-        <TemplateComponent data={data} colorTheme={theme} />
+        {React.createElement(TemplateComponent, { data, colorTheme: theme })}
       </div>
     </div>
   );

@@ -122,6 +122,22 @@ export default function EngineeringTemplate({ data, colorTheme }: { data: CVData
             </div>
           </section>
         )}
+
+        {certifications && certifications.length > 0 && (
+          <section>
+            <h2 style={{ fontSize: "1.2rem", fontWeight: "bold", color: colorTheme.primary, textTransform: "uppercase", borderBottom: `2px dashed ${colorTheme.sectionBorder}`, paddingBottom: "5px", marginBottom: "15px" }}>
+              Certifications
+            </h2>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: "10px" }}>
+              {certifications.map((cert) => (
+                <div key={cert.id} style={{ backgroundColor: "#fff", padding: "10px 14px", borderRadius: "4px", border: `1px solid ${colorTheme.sectionBorder}` }}>
+                  <div style={{ fontWeight: "bold", fontSize: "0.9rem" }}>{cert.name}</div>
+                  <div style={{ fontSize: "0.8rem", color: colorTheme.secondary }}>{cert.issuer} {cert.date && `(${formatDate(cert.date)})`}</div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
       </div>
     </div>
   );

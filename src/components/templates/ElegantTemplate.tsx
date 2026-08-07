@@ -11,18 +11,18 @@ const formatDate = (dateString: string) => {
   return date.toLocaleDateString("en-US", { month: "long", year: "numeric" });
 };
 
+const SectionDivider = ({ title, colorTheme }: { title: string; colorTheme: ColorTheme }) => (
+  <div className="flex items-center justify-center my-6">
+    <div className="h-px flex-1" style={{ backgroundColor: colorTheme.sectionBorder }} />
+    <h3 className="mx-4 text-xl tracking-widest uppercase font-serif" style={{ color: colorTheme.primary }}>
+      {title}
+    </h3>
+    <div className="h-px flex-1" style={{ backgroundColor: colorTheme.sectionBorder }} />
+  </div>
+);
+
 export default function ElegantTemplate({ data, colorTheme }: { data: CVData; colorTheme: ColorTheme }) {
   const { personalInfo, education, experience, skills, projects, certifications } = data;
-
-  const SectionDivider = ({ title }: { title: string }) => (
-    <div className="flex items-center justify-center my-6">
-      <div className="h-px flex-1" style={{ backgroundColor: colorTheme.sectionBorder }} />
-      <h3 className="mx-4 text-xl tracking-widest uppercase font-serif" style={{ color: colorTheme.primary }}>
-        {title}
-      </h3>
-      <div className="h-px flex-1" style={{ backgroundColor: colorTheme.sectionBorder }} />
-    </div>
-  );
 
   return (
     <div className="w-full min-h-full p-10 font-serif" style={{ backgroundColor: "#ffffff", color: "#333333" }}>
@@ -57,7 +57,7 @@ export default function ElegantTemplate({ data, colorTheme }: { data: CVData; co
       {/* Experience */}
       {experience && experience.length > 0 && (
         <div>
-          <SectionDivider title="Experience" />
+          <SectionDivider title="Experience" colorTheme={colorTheme} />
           <div className="flex flex-col gap-6">
             {experience.map((exp) => (
               <div key={exp.id}>
@@ -82,7 +82,7 @@ export default function ElegantTemplate({ data, colorTheme }: { data: CVData; co
       {/* Education */}
       {education && education.length > 0 && (
         <div>
-          <SectionDivider title="Education" />
+          <SectionDivider title="Education" colorTheme={colorTheme} />
           <div className="flex flex-col gap-4">
             {education.map((edu) => (
               <div key={edu.id} className="text-center">
@@ -105,7 +105,7 @@ export default function ElegantTemplate({ data, colorTheme }: { data: CVData; co
       {/* Skills */}
       {skills && skills.length > 0 && (
         <div>
-          <SectionDivider title="Skills" />
+          <SectionDivider title="Skills" colorTheme={colorTheme} />
           <div className="text-center">
             <div className="inline-flex flex-wrap justify-center items-center gap-x-2 gap-y-2 text-sm font-sans">
               {skills.map((skill, index) => (
@@ -122,7 +122,7 @@ export default function ElegantTemplate({ data, colorTheme }: { data: CVData; co
       {/* Projects */}
       {projects && projects.length > 0 && (
         <div>
-          <SectionDivider title="Projects" />
+          <SectionDivider title="Projects" colorTheme={colorTheme} />
           <div className="flex flex-col gap-5">
             {projects.map((proj) => (
               <div key={proj.id}>
@@ -149,7 +149,7 @@ export default function ElegantTemplate({ data, colorTheme }: { data: CVData; co
       {/* Certifications */}
       {certifications && certifications.length > 0 && (
         <div>
-          <SectionDivider title="Certifications" />
+          <SectionDivider title="Certifications" colorTheme={colorTheme} />
           <div className="grid grid-cols-2 gap-4 text-center font-sans">
             {certifications.map((cert) => (
               <div key={cert.id} className="p-3 border rounded-sm" style={{ borderColor: colorTheme.sectionBorder }}>

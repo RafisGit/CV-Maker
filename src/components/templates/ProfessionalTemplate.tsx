@@ -15,46 +15,46 @@ export default function ProfessionalTemplate({ data, colorTheme }: { data: CVDat
   const { personalInfo, education, experience, skills, projects, certifications } = data;
 
   return (
-    <div className="bg-white text-gray-900 w-full" style={{ fontFamily: "'Calibri', 'Helvetica Neue', Arial, sans-serif" }}>
-      <div className="flex">
+    <div className="bg-white text-gray-900 w-full min-h-full" style={{ fontFamily: "'Calibri', 'Helvetica Neue', Arial, sans-serif" }}>
+      <div className="flex min-h-[297mm] items-stretch">
         {/* Left Sidebar */}
-        <div className="w-1/3 p-5 space-y-5 min-h-full" style={{ backgroundColor: colorTheme.sidebarBg, color: colorTheme.sidebarText }}>
+        <div className="w-1/3 p-5 space-y-5 shrink-0" style={{ backgroundColor: colorTheme.sidebarBg, color: colorTheme.sidebarText }}>
           <div>
-            <h1 className="text-lg font-bold leading-tight">
+            <h1 className="text-lg font-bold leading-tight" style={{ color: colorTheme.sidebarText }}>
               {personalInfo.fullName || "Your Name"}
             </h1>
           </div>
 
           <div className="space-y-1.5">
-            <h2 className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: `${colorTheme.sidebarText}99` }}>
+            <h2 className="text-xs font-semibold uppercase tracking-wider mb-2 opacity-80" style={{ color: colorTheme.sidebarText }}>
               Contact
             </h2>
             {personalInfo.email && (
-              <div className="flex items-center gap-1.5 text-xs" style={{ color: `${colorTheme.sidebarText}cc` }}>
+              <div className="flex items-center gap-1.5 text-xs opacity-95" style={{ color: colorTheme.sidebarText }}>
                 <Mail className="h-3 w-3 shrink-0" />
                 <span className="break-all">{personalInfo.email}</span>
               </div>
             )}
             {personalInfo.phone && (
-              <div className="flex items-center gap-1.5 text-xs" style={{ color: `${colorTheme.sidebarText}cc` }}>
+              <div className="flex items-center gap-1.5 text-xs opacity-95" style={{ color: colorTheme.sidebarText }}>
                 <Phone className="h-3 w-3 shrink-0" />
                 <span>{personalInfo.phone}</span>
               </div>
             )}
             {personalInfo.location && (
-              <div className="flex items-center gap-1.5 text-xs" style={{ color: `${colorTheme.sidebarText}cc` }}>
+              <div className="flex items-center gap-1.5 text-xs opacity-95" style={{ color: colorTheme.sidebarText }}>
                 <MapPin className="h-3 w-3 shrink-0" />
                 <span>{personalInfo.location}</span>
               </div>
             )}
             {personalInfo.linkedin && (
-              <div className="flex items-center gap-1.5 text-xs" style={{ color: `${colorTheme.sidebarText}cc` }}>
+              <div className="flex items-center gap-1.5 text-xs opacity-95" style={{ color: colorTheme.sidebarText }}>
                 <Link2 className="h-3 w-3 shrink-0" />
                 <span className="break-all">{personalInfo.linkedin}</span>
               </div>
             )}
             {personalInfo.website && (
-              <div className="flex items-center gap-1.5 text-xs" style={{ color: `${colorTheme.sidebarText}cc` }}>
+              <div className="flex items-center gap-1.5 text-xs opacity-95" style={{ color: colorTheme.sidebarText }}>
                 <Globe className="h-3 w-3 shrink-0" />
                 <span className="break-all">{personalInfo.website}</span>
               </div>
@@ -63,21 +63,21 @@ export default function ProfessionalTemplate({ data, colorTheme }: { data: CVDat
 
           {skills.length > 0 && (
             <div>
-              <h2 className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: `${colorTheme.sidebarText}99` }}>
+              <h2 className="text-xs font-semibold uppercase tracking-wider mb-2 opacity-80" style={{ color: colorTheme.sidebarText }}>
                 Skills
               </h2>
-              <div className="space-y-1.5">
+              <div className="space-y-2">
                 {skills.map((skill) => (
                   <div key={skill.id}>
-                    <div className="flex justify-between items-center mb-0.5">
-                      <span className="text-xs">{skill.name}</span>
-                      <span className="text-xs" style={{ color: `${colorTheme.sidebarText}77` }}>{skill.level}</span>
+                    <div className="flex justify-between items-center mb-1">
+                      <span className="text-xs font-medium" style={{ color: colorTheme.sidebarText }}>{skill.name}</span>
+                      <span className="text-[11px] opacity-80" style={{ color: colorTheme.sidebarText }}>{skill.level}</span>
                     </div>
-                    <div className="w-full rounded-full h-1" style={{ backgroundColor: `${colorTheme.sidebarText}33` }}>
+                    <div className="w-full rounded-full h-1.5 bg-black/20 overflow-hidden">
                       <div
-                        className="h-1 rounded-full"
+                        className="h-1.5 rounded-full"
                         style={{
-                          backgroundColor: colorTheme.accent,
+                          backgroundColor: colorTheme.accent || colorTheme.primary,
                           width: skill.level === "Expert" ? "100%" : skill.level === "Advanced" ? "75%" : skill.level === "Intermediate" ? "50%" : "25%",
                         }}
                       />
@@ -90,16 +90,16 @@ export default function ProfessionalTemplate({ data, colorTheme }: { data: CVDat
 
           {certifications.length > 0 && (
             <div>
-              <h2 className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: `${colorTheme.sidebarText}99` }}>
+              <h2 className="text-xs font-semibold uppercase tracking-wider mb-2 opacity-80" style={{ color: colorTheme.sidebarText }}>
                 Certifications
               </h2>
               <div className="space-y-2">
                 {certifications.map((cert) => (
                   <div key={cert.id}>
-                    <p className="text-xs font-semibold">{cert.name}</p>
-                    <p className="text-xs" style={{ color: `${colorTheme.sidebarText}88` }}>{cert.issuer}</p>
+                    <p className="text-xs font-semibold" style={{ color: colorTheme.sidebarText }}>{cert.name}</p>
+                    <p className="text-xs opacity-85" style={{ color: colorTheme.sidebarText }}>{cert.issuer}</p>
                     {cert.date && (
-                      <p className="text-xs" style={{ color: `${colorTheme.sidebarText}66` }}>{formatDate(cert.date)}</p>
+                      <p className="text-[11px] opacity-70" style={{ color: colorTheme.sidebarText }}>{formatDate(cert.date)}</p>
                     )}
                   </div>
                 ))}

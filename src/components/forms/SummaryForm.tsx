@@ -16,14 +16,15 @@ export default function SummaryForm() {
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-1.5">
+        <label htmlFor="info-summary" className="block text-sm font-medium mb-1.5">
           Summary / Objective
         </label>
         <textarea
+          id="info-summary"
           value={data.personalInfo.summary}
           onChange={(e) => updatePersonalInfo({ summary: e.target.value })}
           rows={6}
-          className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors resize-none"
+          className="w-full px-3.5 py-2.5 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors resize-y text-sm"
           placeholder="Experienced software engineer with 5+ years of expertise in building scalable web applications..."
         />
         <p className="text-xs text-muted-foreground mt-1">

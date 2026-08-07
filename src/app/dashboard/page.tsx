@@ -1,20 +1,19 @@
 "use client";
 
-import { useEffect, useState, useCallback, useTransition, useMemo } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Navbar from "@/components/ui/Navbar";
-import { getUserCVs, createCV, deleteCV, duplicateCV } from "@/lib/database";
+import { getUserCVs, deleteCV, duplicateCV } from "@/lib/database";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { CV } from "@/types/cv";
-import { getTemplateComponent, getTemplateMetadata } from "@/lib/templates/registry";
-import { getColorTheme } from "@/lib/templates/colors";
+import { getTemplateMetadata } from "@/lib/templates/registry";
 import TemplateThumbnail from "@/components/templates/TemplateThumbnail";
 import {
   Plus, Trash2, Copy, Edit, FileText, Loader2, MoreVertical,
   Search, SortAsc, LayoutGrid, Clock, Sparkles, ArrowRight,
-  X, ChevronRight, Grid, List
+  ChevronRight, Grid, List
 } from "lucide-react";
 
 export default function DashboardPage() {
@@ -24,7 +23,6 @@ export default function DashboardPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("updated");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const [isPending, startTransition] = useTransition();
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [duplicatingId, setDuplicatingId] = useState<string | null>(null);
 
@@ -299,7 +297,7 @@ export default function DashboardPage() {
               
               {filteredCVs.length === 0 && (
                 <div className="col-span-full py-12 text-center">
-                  <p className="text-gray-500 text-lg">No resumes found matching "{searchQuery}"</p>
+                  <p className="text-gray-500 text-lg">No resumes found matching &quot;{searchQuery}&quot;</p>
                   <button 
                     onClick={() => setSearchQuery("")}
                     className="mt-2 text-blue-600 font-medium hover:underline"
@@ -348,8 +346,6 @@ function ResumeCard({
   isDeleting: boolean;
   isDuplicating: boolean;
 }) {
-  const TemplateComponent = getTemplateComponent(cv.template);
-  const theme = getColorTheme(cv.colorTheme || 'blue');
   const metadata = getTemplateMetadata(cv.template);
 
   if (viewMode === 'list') {
@@ -375,7 +371,7 @@ function ResumeCard({
           </div>
         </div>
         
-        <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="flex items-center gap-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
           <Link href={`/builder/${cv.id}`} className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
             <Edit className="w-5 h-5" />
           </Link>

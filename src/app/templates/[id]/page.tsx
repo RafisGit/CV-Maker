@@ -35,7 +35,7 @@ export default function TemplateDetail() {
         <Navbar />
         <div className="flex-1 flex flex-col items-center justify-center p-6 text-center">
           <h1 className="text-3xl font-bold text-slate-900 mb-4">Template Not Found</h1>
-          <p className="text-slate-500 mb-8 max-w-md">The template you're looking for doesn't exist or has been removed.</p>
+          <p className="text-slate-500 mb-8 max-w-md">The template you&apos;re looking for doesn&apos;t exist or has been removed.</p>
           <Link href="/templates" className="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors">
             Browse Templates
           </Link>

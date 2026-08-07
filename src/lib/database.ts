@@ -83,8 +83,9 @@ export async function getUserCVs(): Promise<CV[]> {
           : { ...defaultCVData },
       };
     });
-  } catch (err: any) {
-    console.warn("Falling back to local storage for getUserCVs:", err.message || err);
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.warn("Falling back to local storage for getUserCVs:", msg);
     return getLocalCVs();
   }
 }
@@ -142,7 +143,7 @@ export async function getCVById(id: string): Promise<CV | null> {
       user_id: data.user_id,
       title: data.title,
       template: data.template as TemplateType,
-      colorTheme: (data as any).colorTheme || "blue",
+      colorTheme: (data as { colorTheme?: string }).colorTheme || "blue",
       created_at: data.created_at,
       updated_at: data.updated_at,
       cv_data: cvDataRow
@@ -156,8 +157,9 @@ export async function getCVById(id: string): Promise<CV | null> {
           }
         : { ...defaultCVData },
     };
-  } catch (err: any) {
-    console.warn("Falling back to local storage for getCVById:", err.message || err);
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.warn("Falling back to local storage for getCVById:", msg);
     const cvs = getLocalCVs();
     return cvs.find((c) => c.id === id) || null;
   }
@@ -223,8 +225,9 @@ export async function createCV(
     if (dataError) throw dataError;
 
     return cvId;
-  } catch (err: any) {
-    console.warn("Falling back to local storage for createCV:", err.message || err);
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.warn("Falling back to local storage for createCV:", msg);
     const cvs = getLocalCVs();
     cvs.unshift(newCv);
     saveLocalCVs(cvs);
@@ -301,8 +304,9 @@ export async function updateCV(
       .eq("cv_id", id);
 
     if (dataError) throw dataError;
-  } catch (err: any) {
-    console.warn("Falling back to local storage for updateCV:", err.message || err);
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.warn("Falling back to local storage for updateCV:", msg);
   }
 }
 
@@ -327,8 +331,9 @@ export async function deleteCV(id: string): Promise<void> {
       .eq("user_id", user.id);
 
     if (error) throw error;
-  } catch (err: any) {
-    console.warn("Falling back to local storage for deleteCV:", err.message || err);
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.warn("Falling back to local storage for deleteCV:", msg);
   }
 }
 
@@ -390,8 +395,9 @@ export async function duplicateCV(id: string): Promise<string> {
     if (dataError) throw dataError;
 
     return newCvId;
-  } catch (err: any) {
-    console.warn("Falling back to local storage for duplicateCV:", err.message || err);
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.warn("Falling back to local storage for duplicateCV:", msg);
     const cvs = getLocalCVs();
     cvs.unshift(newCv);
     saveLocalCVs(cvs);

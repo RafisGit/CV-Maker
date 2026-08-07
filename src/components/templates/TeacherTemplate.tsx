@@ -34,7 +34,7 @@ export default function TeacherTemplate({ data, colorTheme }: { data: CVData; co
 
       {personalInfo.summary && (
         <div style={{ backgroundColor: colorTheme.primaryLight, padding: "20px 30px", borderRadius: "8px", marginBottom: "30px", fontStyle: "italic", textAlign: "center", fontSize: "1.05rem", color: colorTheme.primary }}>
-          "{personalInfo.summary}"
+          &quot;{personalInfo.summary}&quot;
         </div>
       )}
 

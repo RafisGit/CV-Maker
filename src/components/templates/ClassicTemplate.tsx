@@ -18,9 +18,9 @@ export default function ClassicTemplate({ data, colorTheme }: { data: CVData; co
   const sectionHeaderStyle = {
     fontSize: "1.1rem",
     fontWeight: "bold",
-    color: "#000",
+    color: colorTheme.primary,
     textTransform: "uppercase" as const,
-    borderBottom: "1px solid #000",
+    borderBottom: `1px solid ${colorTheme.primary}`,
     marginBottom: "0.5rem",
     paddingBottom: "0.2rem",
     marginTop: "1.2rem",

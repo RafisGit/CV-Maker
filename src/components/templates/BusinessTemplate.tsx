@@ -3,7 +3,7 @@
 import React from "react";
 import { CVData } from "@/types/cv";
 import { ColorTheme } from "@/lib/templates/colors";
-import { Mail, Phone, MapPin, Link2, Globe, Briefcase } from "lucide-react";
+import { Briefcase } from "lucide-react";
 
 export default function BusinessTemplate({ data, colorTheme }: { data: CVData; colorTheme: ColorTheme }) {
   const formatDate = (dateString: string) => {

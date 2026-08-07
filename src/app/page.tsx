@@ -2,11 +2,10 @@
 
 import Link from "next/link";
 import { 
-  FileText, Zap, Download, Layout, Sparkles, CheckCircle2, 
-  ArrowRight, ShieldCheck, Palette, Cpu, Award, Star
+  FileText, Zap, Download, Sparkles, CheckCircle2, 
+  ArrowRight, ShieldCheck, Palette, Cpu, Award
 } from "lucide-react";
-import { getAllTemplates, getTemplateComponent } from "@/lib/templates/registry";
-import { getColorTheme } from "@/lib/templates/colors";
+import { getAllTemplates } from "@/lib/templates/registry";
 import { sampleResumeData } from "@/lib/templates/sample-data";
 import TemplateThumbnail from "@/components/templates/TemplateThumbnail";
 
@@ -122,9 +121,6 @@ export default function Home() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {featuredTemplates.map((template) => {
-                const Component = getTemplateComponent(template.id);
-                const theme = getColorTheme(template.colorDefault);
-
                 return (
                   <div 
                     key={template.id} 

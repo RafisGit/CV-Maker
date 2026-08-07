@@ -35,7 +35,7 @@ export default function AcademicTemplate({ data, colorTheme }: { data: CVData; c
         
         {education.length > 0 && (
           <section>
-            <h2 style={{ fontSize: "1.2rem", fontWeight: "bold", textTransform: "uppercase", borderBottom: `2px solid #000`, paddingBottom: "5px", marginBottom: "15px" }}>
+            <h2 style={{ fontSize: "1.2rem", fontWeight: "bold", textTransform: "uppercase", borderBottom: `2px solid ${colorTheme.primary}`, paddingBottom: "5px", marginBottom: "15px" }}>
               Education
             </h2>
             <div style={{ display: "flex", flexDirection: "column", gap: "15px" }}>

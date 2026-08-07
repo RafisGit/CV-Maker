@@ -16,9 +16,9 @@ export default function TwoColumnModernTemplate({ data, colorTheme }: { data: CV
   const { personalInfo, education, experience, skills, projects, certifications } = data;
 
   return (
-    <div style={{ display: "flex", minHeight: "100%", width: "100%", fontFamily: "sans-serif" }}>
+    <div style={{ display: "flex", minHeight: "297mm", width: "100%", fontFamily: "sans-serif", alignItems: "stretch" }}>
       {/* Left Column */}
-      <div style={{ width: "35%", backgroundColor: colorTheme.sidebarBg, color: colorTheme.sidebarText, padding: "2rem" }}>
+      <div style={{ width: "35%", backgroundColor: colorTheme.sidebarBg, color: colorTheme.sidebarText, padding: "2rem", flexShrink: 0 }}>
         <h1 style={{ fontSize: "2.2rem", fontWeight: "bold", marginBottom: "0.5rem", color: colorTheme.primaryLight, lineHeight: 1.1 }}>
           {personalInfo.fullName || "Your Name"}
         </h1>
